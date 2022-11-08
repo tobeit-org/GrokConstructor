@@ -60,7 +60,7 @@ case class JoniRegex(regex: String) {
       }.toMap
     }
 
-    def regex = JoniRegex.this.regex
+    def regex: String = JoniRegex.this.regex
   }
 
   /** Finds first occurrence of a regex in a String. */

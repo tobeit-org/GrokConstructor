@@ -13,7 +13,7 @@ import org.scalatest.matchers.should.Matchers._
 @RunWith(classOf[JUnitRunner])
 class JoniRegexTest extends AnyFlatSpec {
 
-  def startsWith(s: String, r: Regex) = {
+  def startsWith(s: String, r: Regex): Int = {
     val bytes = s.getBytes
     val matcher = r.matcher(bytes)
     matcher.`match`(0, bytes.length, 0)
@@ -40,7 +40,7 @@ class JoniRegexTest extends AnyFlatSpec {
     found should equal(2)
   }
 
-  val rn = JoniRegex("a.*c")
+  val rn: JoniRegex = JoniRegex("a.*c")
 
   "JoniRegex.matchStartOf" should "return None if the regex is not found at the start" in {
     for (str <- List("cabcd", "bcd", ""))
@@ -53,7 +53,7 @@ class JoniRegexTest extends AnyFlatSpec {
   }
 
   "JoniRegex.find" should "find a regex and return the correct values" in {
-    val rnamed = new JoniRegex("la(?<foo>blu)bl")
+    val rnamed = JoniRegex("la(?<foo>blu)bl")
     val jmatch = rnamed.findIn("blablubluf").get
     jmatch.before should equal("b")
     jmatch.after should equal("uf")
@@ -62,7 +62,7 @@ class JoniRegexTest extends AnyFlatSpec {
   }
 
   it should "not find anything if it isn't there" in {
-    val rnamed = new JoniRegex("la(?<foo>blu)bl")
+    val rnamed = JoniRegex("la(?<foo>blu)bl")
     rnamed.findIn("nixda") should equal(None)
   }
 
@@ -72,7 +72,7 @@ class JoniRegexTest extends AnyFlatSpec {
     quote("bla") should equal("bla")
     val allspecialchars = "bla[.(|?*+{^$blu\\"
     quote(allspecialchars) should equal("bla\\[\\.\\(\\|\\?\\*\\+\\{\\^\\$blu\\\\")
-    val matched = new JoniRegex(quote(allspecialchars)).matchStartOf(allspecialchars)
+    val matched = JoniRegex(quote(allspecialchars)).matchStartOf(allspecialchars)
     matched.get.rest should equal("")
   }
 

@@ -1,5 +1,6 @@
 package net.stoerr.grokconstructor.patterntranslation
 
+import scala.collection.mutable
 import scala.util.matching.Regex
 
 /**
@@ -14,7 +15,7 @@ object Log4jTranslator {
   /** Matches log4j conversion specifiers - group 1 = left justify if -, group 2 = minimum width,
     * group 3 = maximum width, group 4 = argument in case of %d etc. */
   val conversionSpecifier: Regex =
-    """%(?:(-)?(\d+))?(?:\.(\d+))?([a-zA-Z])(?:\{([^}]+)\})?""".r
+    """%(?:(-)?(\d+))?(?:\.(\d+))?([a-zA-Z])(?:\{([^}]+)})?""".r
 
   def translate(conversionpattern: String): String =
     replaceMatchesAndInbetween(conversionpattern, conversionSpecifier, translateConversionSpecifier, quoteAsRegex)
@@ -51,11 +52,11 @@ object Log4jTranslator {
     "(?<timestamp>" + format + ")"
   }
 
-  val dateFormatComponent = "(([a-zA-Z])\\2*)(.*)".r
+  val dateFormatComponent: Regex = "(([a-zA-Z])\\2*)(.*)".r
   // fullcomponent, componentchar, rest
-  val dateFormatLiteral = "'([^']+)(.*)".r
+  val dateFormatLiteral: Regex = "'([^']+)(.*)".r
   // literal, rest
-  val otherChar = "([^a-zA-Z])(.*)".r // char, rest
+  val otherChar: Regex = "([^a-zA-Z])(.*)".r // char, rest
 
   private def translateExplicitDateFormat(dateFormat: String): String = dateFormat match {
     case null | "" => dateFormat
@@ -93,7 +94,7 @@ object Log4jTranslator {
     .replaceAll( """([(){}|\\\[\]])""", """\\$1""")
 
   def replaceMatchesAndInbetween(source: String, regex: Regex, matchfunc: Regex.Match => String, betweenfunc: String => String): String = {
-    val res = new StringBuilder
+    val res = new mutable.StringBuilder
     var lastend = 0
     regex findAllMatchIn source foreach { thematch =>
       res ++= betweenfunc(source.substring(lastend, thematch.start))

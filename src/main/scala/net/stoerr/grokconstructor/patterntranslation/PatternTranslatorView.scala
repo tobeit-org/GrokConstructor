@@ -6,7 +6,7 @@ import net.stoerr.grokconstructor.webframework.{WebView, WebViewWithHeaderAndSid
 import java.util.logging.Logger
 import javax.servlet.http.HttpServletRequest
 import scala.util.{Failure, Random, Success, Try}
-import scala.xml.NodeSeq
+import scala.xml.{Node, NodeSeq}
 
 /**
   * Created by hps on 13.04.2016.
@@ -16,9 +16,9 @@ class PatternTranslatorView(val request: HttpServletRequest) extends WebViewWith
   private val logger = Logger.getLogger("PatternTranslatorView")
 
   override val title: String = "Pattern Translation"
-  val form = PatternTranslatorForm(request)
+  val form: PatternTranslatorForm = PatternTranslatorForm(request)
 
-  override def action = PatternTranslatorView.path
+  override def action: String = PatternTranslatorView.path
 
   override def maintext: NodeSeq = <p>This tries to generate a
     <a href="http://logstash.net/docs/latest/filters/grok">grok regular expression</a>
@@ -45,7 +45,7 @@ class PatternTranslatorView(val request: HttpServletRequest) extends WebViewWith
     (if (form.format.value.isEmpty || translationResult.isEmpty || translationResult.get.isFailure) <span/>
     else <p>You can also try out the constructed regex by calling the matcher.</p> ++ submit("Go to matcher", "matcher"))
 
-  val examples = List("%d{dd.MM.yyyy HH:mm:ss},%m%n",
+  val examples: List[String] = List("%d{dd.MM.yyyy HH:mm:ss},%m%n",
     "%-4r [%t] %-5p %c %x - %m%n",
     "%d{yyyyMMddHHmmss};%X{host};COMMONS;(%13F:%L);%X{gsid};%X{lsid};%-5p;%m%n",
     "[cc]%d{MMM-dd HH:mm:ss} %-14.14c{1}- %m%n",
@@ -71,10 +71,10 @@ class PatternTranslatorView(val request: HttpServletRequest) extends WebViewWith
 
   override def result: NodeSeq = <span/>
 
-  def resultPart = translationResult.map {
+  def resultPart: Node = translationResult.map {
     case Success(translated) =>
       form.result.value = Some(translated)
-      table(row(form.result.inputTextArea("Constructed grok pattern:", 180, 6, enabled = false)))
+      table(row(form.result.inputTextArea("Constructed grok pattern:", 180, enabled = false)))
     case Failure(TranslationException(message)) =>
       table(warn(s"The pattern could not be translated because : $message"))
     case Failure(otherException) => throw otherException

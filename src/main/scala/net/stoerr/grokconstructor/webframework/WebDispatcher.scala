@@ -7,13 +7,13 @@ import net.stoerr.grokconstructor.automatic.AutomaticDiscoveryView
 import net.stoerr.grokconstructor.incremental.{IncrementalConstructionInputView, IncrementalConstructionStepView}
 import net.stoerr.grokconstructor.matcher.MatcherEntryView
 import net.stoerr.grokconstructor.patterntranslation.PatternTranslatorView
-import org.json4s.NoTypeHints
+import org.json4s.{Formats, NoTypeHints}
 import org.json4s.native.Serialization
 
 import java.util.{Timer, TimerTask}
 import scala.collection.immutable.TreeMap
 import scala.collection.mutable
-import scala.collection.JavaConverters
+import scala.jdk.CollectionConverters._
 import scala.util.Random
 import scala.xml.{Elem, NodeSeq}
 
@@ -25,8 +25,8 @@ import scala.xml.{Elem, NodeSeq}
  */
 class WebDispatcher extends HttpServlet {
 
-  val logger = Logger.getLogger("WebDispatcher")
-  implicit val formats = Serialization.formats(NoTypeHints)
+  val logger: Logger = Logger.getLogger("WebDispatcher")
+  implicit val formats: AnyRef with Formats = Serialization.formats(NoTypeHints)
   private val reqattrReqId = "requestid"
   private val timer = new Timer("Request aborter", true)
   private val maxRequestProcessingTime = 20000
@@ -36,7 +36,7 @@ class WebDispatcher extends HttpServlet {
     super.destroy()
   }
 
-  override def doPost(req: HttpServletRequest, resp: HttpServletResponse) {
+  override def doPost(req: HttpServletRequest, resp: HttpServletResponse): Unit = {
     System.err.println("Incoming request " + reqInfo(req))
     doGet(req, resp)
   }
@@ -55,7 +55,7 @@ class WebDispatcher extends HttpServlet {
         }
     }
 
-  override def doGet(req: HttpServletRequest, resp: HttpServletResponse) {
+  override def doGet(req: HttpServletRequest, resp: HttpServletResponse): Unit = {
     val beginTime = System.currentTimeMillis()
     logger.fine("Processing request " + reqInfo(req))
     val abortTask: TimerTask = scheduleInterruptTask()
@@ -198,7 +198,7 @@ class WebDispatcher extends HttpServlet {
 
   def reqInfo(req: HttpServletRequest): String = {
     try {
-      val parameterMap: mutable.Map[String, Array[String]] = JavaConverters.asScala(req.getParameterMap.asInstanceOf[java.util.Map[String, Array[String]]])
+      val parameterMap: mutable.Map[String, Array[String]] = req.getParameterMap.asScala
       val url = req.getRequestURI + Option(req.getQueryString).map("?" + _).getOrElse("")
       val parameters: TreeMap[String, Array[String]] = TreeMap(parameterMap.toList: _*)
         .filterNot(e => e._2.isEmpty || e._2.forall(_.isEmpty))

@@ -23,12 +23,12 @@ class GrokPatternLibraryTest extends AnyFlatSpec {
       val replaced = GrokPatternLibrary.replacePatterns(v, patterns)
       // println(k + "\t" + replaced)
       // make sure all patterns are actually compileable
-      new JoniRegex(v).matchStartOf("bla")
+      JoniRegex(v).matchStartOf("bla")
     }
   }
 
   "GrokPatternLibrary.replacePatterns" should "replace groks patterns" in {
-    val grokReference = """%\{(\w+)(?::(\w+)(?::(?:int|float))?)?\}""".r
+    val grokReference = """%\{(\w+)(?::(\w+)(?::(?:int|float))?)?}""".r
     grokReference.pattern.matcher("%{BU}").matches() should equal(true)
     grokReference.pattern.matcher("%{BLA:name}").matches() should equal(true)
     grokReference.pattern.matcher("%{BLA:name:int}").matches() should equal(true)
