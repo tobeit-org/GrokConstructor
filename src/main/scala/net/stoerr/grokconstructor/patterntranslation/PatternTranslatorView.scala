@@ -1,13 +1,10 @@
 package net.stoerr.grokconstructor.patterntranslation
 
-import java.util.logging.Logger
-import javax.servlet.http.HttpServletRequest
-
-import net.stoerr.grokconstructor.RandomTryLibrary
-import net.stoerr.grokconstructor.automatic.AutomaticDiscoveryView
 import net.stoerr.grokconstructor.matcher.MatcherEntryView
 import net.stoerr.grokconstructor.webframework.{WebView, WebViewWithHeaderAndSidebox}
 
+import java.util.logging.Logger
+import javax.servlet.http.HttpServletRequest
 import scala.util.{Failure, Random, Success, Try}
 import scala.xml.NodeSeq
 

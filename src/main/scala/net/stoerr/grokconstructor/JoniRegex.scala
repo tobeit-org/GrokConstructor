@@ -1,8 +1,6 @@
 package net.stoerr.grokconstructor
 
-import java.nio.charset.Charset
 import java.util.logging.Logger
-
 import org.jcodings.specific.UTF8Encoding
 import org.joni.exception.SyntaxException
 import org.joni.{Matcher, NameEntry, Regex}

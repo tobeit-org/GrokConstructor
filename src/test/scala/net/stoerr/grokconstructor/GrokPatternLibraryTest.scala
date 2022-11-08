@@ -1,10 +1,9 @@
 package net.stoerr.grokconstructor
 
+import org.scalatest.flatspec.AnyFlatSpec
 import org.junit.runner.RunWith
-import org.scalatest.FlatSpec
-import org.scalatest.junit.JUnitRunner
-import org.scalatest.matchers.ShouldMatchers
-
+import org.scalatestplus.junit.JUnitRunner
+import org.scalatest.matchers.should.Matchers._
 import scala.io.{Codec, Source}
 
 /**
@@ -12,7 +11,7 @@ import scala.io.{Codec, Source}
   * @since 06.02.13
   */
 @RunWith(classOf[JUnitRunner])
-class GrokPatternLibraryTest extends FlatSpec with ShouldMatchers {
+class GrokPatternLibraryTest extends AnyFlatSpec {
 
   "GrokPatternLibrary.readGrokPatterns" should "read a pattern file and replace patterns" in {
     val src = Source.fromInputStream(getClass.getClassLoader.getResourceAsStream("grok/grok-patterns"))(Codec.UTF8)
@@ -36,9 +35,7 @@ class GrokPatternLibraryTest extends FlatSpec with ShouldMatchers {
     grokReference.pattern.matcher("%{BLA:name:float}").matches() should equal(true)
     GrokPatternLibrary.replacePatterns("bla%{BU}bu%{BLA}hu", Map("BU" -> "XYZ", "BLA" -> "HU%{BU}HA")) should equal("bla(?:XYZ)bu(?:HU(?:XYZ)HA)hu")
     GrokPatternLibrary.replacePatterns("%{BU:foo}%{BLA:bar}", Map("BU" -> "XYZ", "BLA" -> "HU%{BU}HA")) should equal("(?<foo>XYZ)(?<bar>HU(?:XYZ)HA)")
-    evaluating {
-      GrokPatternLibrary.replacePatterns("%{NIX}", Map())
-    } should produce[GrokPatternNameUnknownException]
+    an [GrokPatternNameUnknownException] should be thrownBy GrokPatternLibrary.replacePatterns("%{NIX}", Map())
   }
 
   "GrokPatternLibrary" should "read all patterns" in {

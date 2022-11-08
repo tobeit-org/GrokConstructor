@@ -12,7 +12,8 @@ import org.json4s.native.Serialization
 
 import java.util.{Timer, TimerTask}
 import scala.collection.immutable.TreeMap
-import scala.collection.{JavaConversions, mutable}
+import scala.collection.mutable
+import scala.collection.JavaConverters
 import scala.util.Random
 import scala.xml.{Elem, NodeSeq}
 
@@ -197,7 +198,7 @@ class WebDispatcher extends HttpServlet {
 
   def reqInfo(req: HttpServletRequest): String = {
     try {
-      val parameterMap: mutable.Map[String, Array[String]] = JavaConversions.mapAsScalaMap(req.getParameterMap.asInstanceOf[java.util.Map[String, Array[String]]])
+      val parameterMap: mutable.Map[String, Array[String]] = JavaConverters.asScala(req.getParameterMap.asInstanceOf[java.util.Map[String, Array[String]]])
       val url = req.getRequestURI + Option(req.getQueryString).map("?" + _).getOrElse("")
       val parameters: TreeMap[String, Array[String]] = TreeMap(parameterMap.toList: _*)
         .filterNot(e => e._2.isEmpty || e._2.forall(_.isEmpty))

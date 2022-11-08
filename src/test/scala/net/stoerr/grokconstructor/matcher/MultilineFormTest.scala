@@ -1,14 +1,13 @@
 package net.stoerr.grokconstructor.matcher
 
 import javax.servlet.http.HttpServletRequest
-
 import net.stoerr.grokconstructor.forms.MultilineFormPart
 import org.junit.runner.RunWith
 import org.mockito.Mockito._
-import org.scalatest.FlatSpec
-import org.scalatest.junit.JUnitRunner
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatestplus.junit.JUnitRunner
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.mockito.MockitoSugar
 
 /**
  * Tests the functionality of MultilineFormPart
@@ -16,7 +15,7 @@ import org.scalatest.mock.MockitoSugar
  * @since 26.02.13
  */
 @RunWith(classOf[JUnitRunner])
-class MultilineFormTest extends FlatSpec with ShouldMatchers with MockitoSugar {
+class MultilineFormTest extends AnyFlatSpec with MockitoSugar {
 
   private class MockForm(val request: HttpServletRequest) extends MultilineFormPart
 

@@ -1,17 +1,17 @@
 package net.stoerr.grokconstructor
 
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 import org.joni.Regex
-import org.scalatest.junit.JUnitRunner
+import org.scalatestplus.junit.JUnitRunner
 import org.junit.runner.RunWith
+import org.scalatest.matchers.should.Matchers._
 
 /**
  * @author <a href="http://www.stoerr.net/">Hans-Peter Stoerr</a>
  * @since 06.02.13
  */
 @RunWith(classOf[JUnitRunner])
-class JoniRegexTest extends FlatSpec with ShouldMatchers {
+class JoniRegexTest extends AnyFlatSpec {
 
   def startsWith(s: String, r: Regex) = {
     val bytes = s.getBytes

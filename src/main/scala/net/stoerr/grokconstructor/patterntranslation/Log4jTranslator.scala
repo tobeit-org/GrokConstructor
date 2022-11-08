@@ -36,7 +36,7 @@ object Log4jTranslator {
       case "x" => "(%{NOTSPACE:ndc})?"
       case "X" => if (null == argument) """\{(?<mdc>(?:\{[^\}]*,[^\}]*\})*)\}""" else "(%{NOTSPACE:" + argument + "})?"
       case "d" => translateDate(argument)
-      case other => throw new TranslationException("Unknown conversion specifier " + other)
+      case other => throw TranslationException("Unknown conversion specifier " + other)
     }
     align(baseRegex, leftjust, minwidth, maxwidth)
   }
@@ -106,4 +106,4 @@ object Log4jTranslator {
 
 }
 
-case class TranslationException(reason: String) extends Exception(reason)
+

@@ -1,12 +1,11 @@
 package net.stoerr.grokconstructor
 
 import automatic.AutomaticDiscoveryView
-import automatic.AutomaticDiscoveryView.FixedString
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.FlatSpec
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
+import org.scalatestplus.junit.JUnitRunner
 import AutomaticDiscoveryView._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers._
 
 /**
  * Guess what: verifies algorithms in AutomaticDiscoveryView.
@@ -14,7 +13,7 @@ import AutomaticDiscoveryView._
  * @since 07.02.13
  */
 @RunWith(classOf[JUnitRunner])
-class AutomaticDiscoveryViewTest extends FlatSpec with ShouldMatchers {
+class AutomaticDiscoveryViewTest extends AnyFlatSpec {
 
   "AutomaticDiscoveryView.commonPrefixExceptDigitsOrLetters" should "return the common prefix of two strings" in {
     commonPrefixExceptDigitsOrLetters("$#@@#$@", "$#%@#$") should equal("$#")

@@ -1,11 +1,10 @@
 package net.stoerr.grokconstructor.automatic
 
-import javax.servlet.http.HttpServletRequest
-
 import net.stoerr.grokconstructor.automatic.AutomaticDiscoveryView.{FixedString, NamedRegex, RegexPart}
 import net.stoerr.grokconstructor.webframework.{WebView, WebViewWithHeaderAndSidebox}
 import net.stoerr.grokconstructor.{GrokPatternLibrary, JoniRegex, RandomTryLibrary, StartMatch}
-
+import javax.servlet.http.HttpServletRequest
+import scala.collection.MapView
 import scala.xml.NodeSeq
 
 /**
@@ -20,11 +19,11 @@ import scala.xml.NodeSeq
 class AutomaticDiscoveryView(val request: HttpServletRequest) extends WebViewWithHeaderAndSidebox {
 
   lazy val namedRegexps: Map[String, JoniRegex] = form.grokPatternLibrary.map {
-    case (name, regex) => name -> new JoniRegex(GrokPatternLibrary.replacePatterns(regex, form.grokPatternLibrary))
+    case (name, regex) => name -> JoniRegex(GrokPatternLibrary.replacePatterns(regex, form.grokPatternLibrary))
   }
   lazy val namedRegexpsList: List[(String, JoniRegex)] = namedRegexps.toList
   override val title: String = "Automatic grok discovery"
-  val form = AutomaticDiscoveryForm(request)
+  val form: AutomaticDiscoveryForm = AutomaticDiscoveryForm(request)
   /** We try at most this many calls to avoid endless loops because of
     * the combinatorical explosion */
   var callCountdown = 1000
@@ -69,8 +68,8 @@ class AutomaticDiscoveryView(val request: HttpServletRequest) extends WebViewWit
           case FixedString(str) => <span>
             {'»' + str + '«'}
           </span>
-          case NamedRegex(patterns) if (patterns.size == 1) => <span>
-            {"%{" + patterns(0) + "}"}
+          case NamedRegex(patterns) if patterns.size == 1 => <span>
+            {"%{" + patterns.head + "}"}
           </span>
           case NamedRegex(patterns) => <select>
             {patterns.sorted map {
@@ -85,25 +84,25 @@ class AutomaticDiscoveryView(val request: HttpServletRequest) extends WebViewWit
   def matchingRegexpStructures(lines: List[String]): Iterator[List[RegexPart]] = {
     if (callCountdown <= 0) return Iterator(List(FixedString("SEARCH TRUNCATED")))
     callCountdown -= 1
-    if (lines.find(!_.isEmpty).isEmpty) return Iterator(List())
+    if (lines.forall(_.isEmpty)) return Iterator(List())
     val commonPrefix = AutomaticDiscoveryView.biggestCommonPrefixExceptDigitsOrLetters(lines)
     if (0 < commonPrefix.length) {
       val restlines = lines.map(_.substring(commonPrefix.length))
-      return matchingRegexpStructures(restlines).map(FixedString(commonPrefix) :: _)
+      matchingRegexpStructures(restlines).map(FixedString(commonPrefix) :: _)
     } else {
       val regexpand = for ((name, regex) <- namedRegexpsList) yield (name, lines.map(regex.matchStartOf))
-      val candidatesThatMatchAllLines = regexpand.filter(_._2.find(_.isEmpty).isEmpty)
-      val candidates = candidatesThatMatchAllLines.filterNot(_._2.find(_.get.length > 0).isEmpty)
+      val candidatesThatMatchAllLines = regexpand.filter(!_._2.exists(_.isEmpty))
+      val candidates = candidatesThatMatchAllLines.filterNot(!_._2.exists(_.get.length > 0))
       val candidateToMatches = candidates.map {
         case (name, matches) => (name, matches.map(_.get))
       }
-      val candidatesGrouped: Map[List[StartMatch], List[String]] = candidateToMatches.groupBy(_._2).mapValues(_.map(_._1))
+      val candidatesGrouped: MapView[List[StartMatch], List[String]] = candidateToMatches.groupBy(_._2).view.mapValues(_.map(_._1))
       val candidatesSorted = candidatesGrouped.toList.sortBy(-_._1.map(_.length).sum)
       val res = for ((matches, names) <- candidatesSorted) yield {
         val restlines = matches.map(_.rest)
         matchingRegexpStructures(restlines).map(NamedRegex(names) :: _)
       }
-      return res.fold(Iterator())(_ ++ _)
+      res.fold(Iterator())(_ ++ _)
     }
   }
 
@@ -116,10 +115,10 @@ object AutomaticDiscoveryView {
   /** The longest string that is a prefix of all lines. */
   def biggestCommonPrefixExceptDigitsOrLetters(lines: List[String]): String =
     if (lines.size != 1) lines.reduce(commonPrefixExceptDigitsOrLetters)
-    else wrapString(lines(0)).takeWhile(!_.isLetterOrDigit)
+    else wrapString(lines.head).takeWhile(!_.isLetterOrDigit).unwrap
 
-  def commonPrefixExceptDigitsOrLetters(str1: String, str2: String) =
-    wrapString(str1).zip(wrapString(str2)).takeWhile(p => (p._1 == p._2 && !p._1.isLetterOrDigit)).map(_._1).mkString("")
+  def commonPrefixExceptDigitsOrLetters(str1: String, str2: String): String =
+    wrapString(str1).zip(wrapString(str2)).takeWhile(p => p._1 == p._2 && !p._1.isLetterOrDigit).map(_._1).mkString("")
 
   sealed trait RegexPart
 

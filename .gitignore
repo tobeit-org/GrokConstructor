@@ -47,3 +47,6 @@ project/plugins/project/
 
 # deliberately excluded
 deploy/grokconstructor-*.json
+.run/
+archive/
+deploy/
