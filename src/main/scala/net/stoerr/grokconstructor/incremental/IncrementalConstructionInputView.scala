@@ -14,7 +14,7 @@ import scala.xml.NodeSeq
  */
 class IncrementalConstructionInputView(val request: HttpServletRequest) extends WebViewWithHeaderAndSidebox {
   val title: String = "Incremental Construction of Grok Patterns"
-  val form = IncrementalConstructionForm(request)
+  val form: IncrementalConstructionForm = IncrementalConstructionForm(request)
 
   def action: String = IncrementalConstructionStepView.path
 

@@ -43,7 +43,7 @@ object RandomTryLibrary {
 
   def example(i: Int): Trial = trials(i)
 
-  def randomExampleNumber() = Random.nextInt(trials.length)
+  def randomExampleNumber(): Int = Random.nextInt(trials.length)
 
   case class Trial(loglines: String, pattern: String, multiline: Option[String])
 

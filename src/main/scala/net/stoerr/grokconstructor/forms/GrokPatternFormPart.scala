@@ -18,12 +18,12 @@ trait GrokPatternFormPart extends WebForm {
 
   lazy val grokPatternLibrary: Map[String, String] =
     GrokPatternLibrary.mergePatternLibraries(groklibs.values, grokadditionalinput.value)
-  val groklibs = InputMultipleChoice("groklibs", GrokPatternLibrary.grokPatternLibraryNames.map(keyToGrokLink).toMap, GrokPatternLibrary.grokPatternLibraryNames)
-  val grokadditionalinput = InputText("grokadditional")
+  val groklibs: InputMultipleChoice = InputMultipleChoice("groklibs", GrokPatternLibrary.grokPatternLibraryNames.map(keyToGrokLink).toMap, GrokPatternLibrary.grokPatternLibraryNames)
+  val grokadditionalinput: InputText = InputText("grokadditional")
 
   if (grokadditionalinput.value.isDefined) logger.fine("grokadditionalinput: " + grokadditionalinput.value)
 
-  def grokpatternEntry =
+  def grokpatternEntry: NodeSeq =
     <div class="ym-fbox-text">
       <label>
         Please mark the libraries of

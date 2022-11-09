@@ -12,7 +12,7 @@
         <appengine.app.version>7</appengine.app.version>
         <appengine.target.version>2.0.9</appengine.target.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <scala.version>2.13.8</scala.version>
+        <scala.version>3.2.1</scala.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -38,38 +38,36 @@
             <version>2.1.43</version>
         </dependency>
         <dependency>
-            <!-- https://mvnrepository.com/artifact/org.scala-lang/scala-library -->
             <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>2.13.10</version>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.2.1</version>
         </dependency>
         <dependency>
-            <!-- https://mvnrepository.com/artifact/org.scala-lang.modules/scala-xml_2.11 -->
             <groupId>org.scala-lang.modules</groupId>
-            <artifactId>scala-xml_2.13</artifactId>
+            <artifactId>scala-xml_3</artifactId>
             <version>2.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.json4s</groupId>
-            <artifactId>json4s-native_2.13</artifactId>
+            <artifactId>json4s-native_3</artifactId>
             <version>4.0.6</version>
         </dependency>
         <dependency>
             <!-- https://mvnrepository.com/artifact/org.scalatest/scalatest_2.11 -->
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.13</artifactId>
+            <artifactId>scalatest_3</artifactId>
             <version>3.2.14</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.scalatestplus</groupId>
-            <artifactId>junit-4-13_2.13</artifactId>
+            <artifactId>junit-4-13_3</artifactId>
             <version>3.2.14.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.scalatestplus</groupId>
-            <artifactId>mockito-4-6_2.13</artifactId>
+            <artifactId>mockito-4-6_3</artifactId>
             <version>3.2.14.0</version>
             <scope>test</scope>
         </dependency>
@@ -96,13 +94,6 @@
             <artifactId>log4j-core</artifactId>
             <version>2.19.0</version>
         </dependency>
-        <!-- <dependency> -->
-            <!-- https://mvnrepository.com/artifact/log4j/log4j -->
-            <!-- <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-            <scope>test</scope>
-        </dependency> -->
     </dependencies>
     <build>
         <sourceDirectory>src/main/scala</sourceDirectory>

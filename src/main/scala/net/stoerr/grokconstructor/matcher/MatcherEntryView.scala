@@ -22,9 +22,9 @@ class MatcherEntryView(val request: HttpServletRequest) extends WebViewWithHeade
   private val logger = Logger.getLogger("MatcherEntryView")
 
   override val title: String = "Test grok patterns"
-  val form = MatcherForm(request)
+  val form: MatcherForm = MatcherForm(request)
 
-  override def action = MatcherEntryView.path + "#result"
+  override def action: String = MatcherEntryView.path + "#result"
 
   override def doforward: Option[Either[String, WebView]] = if (null == request.getParameter("randomize")) None
   else Some(Left(fullpath(MatcherEntryView.path) + "?example=" + RandomTryLibrary.randomExampleNumber()))
@@ -59,7 +59,7 @@ class MatcherEntryView(val request: HttpServletRequest) extends WebViewWithHeade
     form.groklibs.values = List("grok-patterns", "java")
   }
 
-  override def result = form.pattern.value.map(showResult).getOrElse(<span/>)
+  override def result: NodeSeq = form.pattern.value.map(showResult).getOrElse(<span/>)
 
   def showResult(pat: String): NodeSeq = {
     try {

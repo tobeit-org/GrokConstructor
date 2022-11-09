@@ -8,7 +8,7 @@ import javax.servlet.http.{HttpServlet, HttpServletRequest, HttpServletResponse}
  */
 class GrokLibraryServlet extends HttpServlet {
 
-  override def doGet(request: HttpServletRequest, response: HttpServletResponse) {
+  override def doGet(request: HttpServletRequest, response: HttpServletResponse): Unit = {
     val path = request.getPathInfo
     if (path.startsWith("/")) {
       response.setContentType("text/plain")

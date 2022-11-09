@@ -13,16 +13,16 @@ import net.stoerr.grokconstructor.webframework.WebForm
 case class IncrementalConstructionForm(request: HttpServletRequest) extends WebForm with GrokPatternFormPart with MultilineFormPart with LoglinesFormPart {
 
   /** Contains the part of the regular expression that is constructed so far. Starts with \A and matches all loglines. */
-  val constructedRegex = InputText("pattern")
+  val constructedRegex: InputText = InputText("pattern")
 
   /** The next part of the regular expression. */
-  val nextPart = InputText("nextPart")
+  val nextPart: InputText = InputText("nextPart")
 
   /** In case of grok expressions the name we want to give the next part */
-  val nameOfNextPart = InputText("nameOfNextPart")
+  val nameOfNextPart: InputText = InputText("nameOfNextPart")
 
   /** If the user wants to input a regular expression per hand */
-  val nextPartPerHand = InputText("nextPartPerHand")
+  val nextPartPerHand: InputText = InputText("nextPartPerHand")
 
   /** Value for nextPart that marks that nextPartPerHand is choosen. */
   val nextPartPerHandMarker = "ksdf8wej2349j_ThisIsAMarkerForNextPartThatNextPartPerHandWasChoosen"

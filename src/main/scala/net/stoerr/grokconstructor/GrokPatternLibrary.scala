@@ -11,11 +11,11 @@ import scala.util.matching.Regex
  */
 object GrokPatternLibrary {
 
-  val grokPatternLibraryNames = List("aws", "bacula", "bind", "bro", "exim", "firewalls", "grok-patterns", "haproxy",
+  val grokPatternLibraryNames: List[String] = List("aws", "bacula", "bind", "bro", "exim", "firewalls", "grok-patterns", "haproxy",
     "httpd", "java", "junos", "linux-syslog", "maven", "mcollective", "mcollective-patterns", "mongodb",
     "nagios", "postgresql", "rails", "redis", "ruby", "squid").sorted
 
-  lazy val allGrokPatterns = mergePatternLibraries(grokPatternLibraryNames, None)
+  lazy val allGrokPatterns: Map[String, String] = mergePatternLibraries(grokPatternLibraryNames, None)
 
   def mergePatternLibraries(libraries: List[String], extrapatterns: Option[String]): Map[String, String] = {
     val extrapatternlines: Iterator[String] = extrapatterns.map(Source.fromString(_).getLines()).getOrElse(Iterator())
@@ -44,7 +44,7 @@ object GrokPatternLibrary {
     }.toMap
   }
 
-  private val grokReference = """%\{([^}>':]+)(?::([^}>':@\[\]]+)(?::(?:int|float))?)?\}""".r
+  private val grokReference = """%\{([^}>':]+)(?::([^}>':@\[\]]+)(?::(?:int|float))?)?}""".r
 
   /** We replace patterns like %{BLA:name} with the definition of bla. This is done
     * (arbitrarily) 10 times to allow recursions but to not allow infinite loops. */

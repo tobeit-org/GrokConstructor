@@ -13,7 +13,7 @@ object Dissector {
 
   /** Matches prefix, field and rest in a dissection. */
   private val fieldPat =
-    """([^%{}]*+)%\{([^%{}]++)\}(.*+)""".r
+    """([^%{}]*+)%\{([^%{}]++)}(.*+)""".r
 
   private def splitDissection(dissection: String): List[String] = dissection match {
     case fieldPat(start, field, rest) => start :: field :: splitDissection(rest)
@@ -67,12 +67,12 @@ object Dissector {
   def commonSubstrings(lines: Array[String]): Set[String] = lines.iterator.map(substrings(_).toSet).reduce(_ intersect _)
 
   def commonSubstrings2(lines: Array[String]): Set[String] =
-    lines.iterator.drop(1).foldLeft(substrings(lines(0)).toSet)((x, y) => substrings(y).filter(x.contains(_)).toSet)
+    lines.iterator.drop(1).foldLeft(substrings(lines(0)).toSet)((x, y) => substrings(y).filter(x.contains).toSet)
 
   def commonSubstrings3(lines: Array[String]): Set[String] = {
     val sortedLines = lines.sortBy(_.length)
     val firstTwo = substrings(sortedLines(0)).filter(sortedLines(1).contains(_)).toSet
-    sortedLines.iterator.drop(2).foldLeft(firstTwo)((x, y) => substrings(y).filter(x.contains(_)).toSet)
+    sortedLines.iterator.drop(2).foldLeft(firstTwo)((x, y) => substrings(y).filter(x.contains).toSet)
   }
 
   def commonSubstrings4(lines: Array[String]): Seq[String] =

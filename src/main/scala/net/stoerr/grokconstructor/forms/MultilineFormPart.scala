@@ -1,8 +1,6 @@
 package net.stoerr.grokconstructor.forms
 
 import net.stoerr.grokconstructor.{GrokPatternLibrary, JoniRegex}
-import net.stoerr.grokconstructor.webframework.WebForm
-
 import scala.xml.NodeSeq
 
 /**
@@ -15,13 +13,13 @@ trait MultilineFormPart extends GrokPatternFormPart {
 
   /** If non empty, we will put the loglines through a
     * http://logstash.net/docs/latest/filters/multiline filter */
-  val multilineRegex = InputText("multiline")
+  val multilineRegex: InputText = InputText("multiline")
 
   private val negatekey = "negate"
   /** Whether to negate the multilineRegex: if false we will append
     * lines that do <em>not</em> match the filter, else we will append
     * lines that do match the filter. */
-  val multilineNegate = InputMultipleChoice("multilinenegate", Map(negatekey -> <span>negate the multiline regex</span>), List())
+  val multilineNegate: InputMultipleChoice = InputMultipleChoice("multilinenegate", Map(negatekey -> <span>negate the multiline regex</span>), List())
 
   def multilineEntry: NodeSeq =
     multilineRegex.inputText("If you want to use logstash's multiline filter please specify the used pattern (can include grok Patterns):", 80) ++

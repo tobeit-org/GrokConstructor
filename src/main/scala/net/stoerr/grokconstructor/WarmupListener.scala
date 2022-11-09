@@ -14,9 +14,9 @@ import net.stoerr.grokconstructor.patterntranslation.PatternTranslatorView
  * @since 10.12.2014
  */
 class WarmupListener extends ServletContextListener {
-  val logger = Logger.getLogger("WarmupListener")
+  val logger: Logger = Logger.getLogger("WarmupListener")
 
-  override def contextInitialized(sce: ServletContextEvent) = {
+  override def contextInitialized(sce: ServletContextEvent): Unit = {
     logger.info("Warming up")
     GrokPatternLibrary.mergePatternLibraries(GrokPatternLibrary.grokPatternLibraryNames, None)
     warmup(new IncrementalConstructionInputView(null))
@@ -35,5 +35,5 @@ class WarmupListener extends ServletContextListener {
     }
   }
 
-  override def contextDestroyed(sce: ServletContextEvent) = {}
+  override def contextDestroyed(sce: ServletContextEvent): Unit = {}
 }

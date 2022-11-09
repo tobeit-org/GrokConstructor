@@ -9,7 +9,7 @@ import net.stoerr.grokconstructor.{GrokPatternLibrary, JoniRegex, JoniRegexQuote
 import org.joni.exception.SyntaxException
 
 import scala.collection.immutable.NumericRange
-import scala.xml.{NodeSeq, Text}
+import scala.xml.{Elem, NodeSeq, Text}
 
 /**
   * Performs a step in the incremental construction of the grok pattern.
@@ -20,9 +20,9 @@ import scala.xml.{NodeSeq, Text}
 class IncrementalConstructionStepView(val request: HttpServletRequest) extends WebViewWithHeaderAndSidebox {
 
   override val title: String = "Incremental Construction of Grok Patterns in progress"
-  val form = IncrementalConstructionForm(request)
-  val currentRegex = form.constructedRegex.value.getOrElse("\\A") + getNamedNextPartOrEmpty
-  val currentJoniRegex = JoniRegex(GrokPatternLibrary.replacePatterns(currentRegex, form.grokPatternLibrary))
+  val form: IncrementalConstructionForm = IncrementalConstructionForm(request)
+  val currentRegex: String = form.constructedRegex.value.getOrElse("\\A") + getNamedNextPartOrEmpty
+  val currentJoniRegex: JoniRegex = JoniRegex(GrokPatternLibrary.replacePatterns(currentRegex, form.grokPatternLibrary))
   val logLines: Seq[String] = form.multilineFilter(form.loglines.valueSplitToLines).toIndexedSeq
   val loglinesSplitted: Seq[(String, String)] = logLines.map({
     line =>
@@ -30,7 +30,7 @@ class IncrementalConstructionStepView(val request: HttpServletRequest) extends W
       (jmatch.get.matched, jmatch.get.rest)
   })
   val loglineRests: Seq[String] = loglinesSplitted.map(_._2)
-  val constructionDone = loglineRests.forall(_.isEmpty)
+  val constructionDone: Boolean = loglineRests.forall(_.isEmpty)
 
   val groknameToMatches: List[(String, List[String])] = try {
     for {
@@ -57,7 +57,7 @@ class IncrementalConstructionStepView(val request: HttpServletRequest) extends W
   (_._1), p._1)).toList
   form.constructedRegex.value = Some(currentRegex)
   /** groknameListToMatches that have at least one nonempty match, sorted by the sum of the lengths of the matches. */
-  val groknameListToMatchesCleanedup = groknameListToMatches.filter(_._2.exists(!_.isEmpty)).sortBy(-_._2.map(_
+  val groknameListToMatchesCleanedup: List[(List[String], List[String])] = groknameListToMatches.filter(_._2.exists(!_.isEmpty)).sortBy(-_._2.map(_
     .length).sum)
 
   private val syntaxErrorInNextPartPerHand: Option[String] = try {
@@ -147,7 +147,7 @@ class IncrementalConstructionStepView(val request: HttpServletRequest) extends W
 
   private def commonprefixesOfLoglineRests: Iterator[String] = {
     val biggestprefix = biggestCommonPrefix(loglineRests)
-    NumericRange.inclusive(1, biggestprefix.length, 1).toIterator
+    NumericRange.inclusive(1, biggestprefix.length, 1).iterator
       .map(biggestprefix.substring(0, _))
   }
 
@@ -159,7 +159,7 @@ class IncrementalConstructionStepView(val request: HttpServletRequest) extends W
   private def commonPrefix(str1: String, str2: String) = wrapString(str1).zip(wrapString(str2)).takeWhile(p => (p._1
     == p._2)).map(_._1).mkString("")
 
-  def grokoption(grokopt: (List[String], List[String])) = grokopt match {
+  def grokoption(grokopt: (List[String], List[String])): Elem = grokopt match {
     case (groknames, restlinematches) =>
       row2(
         <div class="ym-fbox-check">

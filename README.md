@@ -6,7 +6,7 @@ expressions. GrokConstructor goes beyond that by finding many possible regular e
 that match a whole set of logfile lines by using groks patterns and fixed strings. This can be done automatically
 (which is of limited use only for small stuff), or in a incremental process.
 
-Updated by Joan Jerez in November 2022. Now, it depends on Scala 2.13 and Tomcat 9 (javax.servlet 4.0.1).
+Updated by Joan Jerez in November 2022. Now, it depends on Scala 3.2 and Tomcat 9 (javax.servlet 4.0.1).
 
 ## How to run it
 
