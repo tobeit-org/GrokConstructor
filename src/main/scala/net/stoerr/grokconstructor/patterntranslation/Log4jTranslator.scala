@@ -10,7 +10,7 @@ import scala.util.matching.Regex
   * @since 16.02.2015
   * @see "https://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html"
   */
-object Log4jTranslator {
+class Log4jTranslator {
 
   /** Matches log4j conversion specifiers - group 1 = left justify if -, group 2 = minimum width,
     * group 3 = maximum width, group 4 = argument in case of %d etc. */
@@ -20,7 +20,7 @@ object Log4jTranslator {
   def translate(conversionpattern: String): String =
     replaceMatchesAndInbetween(conversionpattern, conversionSpecifier, translateConversionSpecifier, quoteAsRegex)
 
-  private def translateConversionSpecifier(thematch: Regex.Match): String = {
+  private def translateConversionSpecifier(thematch: Regex.Match) = {
     val List(leftjust, minwidth, maxwidth, conversionchar, argument) = thematch.subgroups
     val baseRegex = conversionchar match {
       case "c" => "(?<logger>[A-Za-z0-9$_.]+)" // "%{JAVACLASS:logger}" does not work for abbreviated patterns
@@ -37,7 +37,7 @@ object Log4jTranslator {
       case "x" => "(%{NOTSPACE:ndc})?"
       case "X" => if (null == argument) """\{(?<mdc>(?:\{[^\}]*,[^\}]*\})*)\}""" else "(%{NOTSPACE:" + argument + "})?"
       case "d" => translateDate(argument)
-      case other => throw TranslationException("Unknown conversion specifier " + other)
+      case other => throw Exception("Unknown conversion specifier " + other)
     }
     align(baseRegex, leftjust, minwidth, maxwidth)
   }

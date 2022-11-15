@@ -1,10 +1,23 @@
 package net.stoerr.grokconstructor.patterntranslation
 
+import net.stoerr.grokconstructor.patterntranslation.Log4jTranslator
+import org.apache.logging.log4j.{Level, LogManager}
+import org.apache.logging.log4j.ThreadContext.ContextStack
+import org.apache.logging.log4j.core.LogEvent
+import org.apache.logging.log4j.core.appender.ConsoleAppender
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory
+import org.apache.logging.log4j.core.impl.Log4jLogEvent
+import org.apache.logging.log4j.core.layout.PatternLayout
+import org.apache.logging.log4j.core.net.Priority
+import org.apache.logging.log4j.core.config.Configurator
+import org.apache.logging.log4j.core.Logger
+import org.apache.logging.log4j.message.{Message, SimpleMessage}
+import org.apache.logging.log4j.core.impl.ContextDataFactory
+import org.apache.logging.log4j.util.StringMap
+
 import java.text.SimpleDateFormat
 import java.util
 import java.util.Date
-import org.apache.logging.log4j._
-import org.apache.logging.log4j.core.layout.PatternLayout
 import org.junit.runner.RunWith
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.junit.JUnitRunner
@@ -13,7 +26,7 @@ import org.scalatestplus.junit.JUnitRunner
  * @author <a href="http://www.stoerr.net/">Hans-Peter Stoerr</a>
  * @since 16.02.2015
  */
-/* @RunWith(classOf[JUnitRunner])
+@RunWith(classOf[JUnitRunner])
 class TestLog4jTranslator extends AnyFlatSpec {
 
   "Log4jTranslator" should "recognize conversion specifiers" in {
@@ -66,22 +79,42 @@ class TestLog4jTranslator extends AnyFlatSpec {
   }
 
   private def formatPriority(pattern: String): String = {
-    val layout = new PatternLayout()
-    layout.setConversionPattern(pattern)
-    val event = new LoggingEvent(null, new Category("bla") {}, Priority.INFO, null, null)
-    layout.format(event)
+    val layout = PatternLayout.newBuilder().withPattern(pattern).build()
+    
+    val event2 = Log4jLogEvent.newBuilder()
+      .setLevel(Level.INFO)
+      .setLoggerName("bla")
+      .build()
+
+    val formattedMessage = layout.toSerializable(event2)
+    formattedMessage
   }
 
   "log4j PatternLayout" should "format messages" in {
-    val layout = new PatternLayout("%d{dd.MM.yyyy HH:mm:ss,SSS} - [%-5p] %c %X{sid} %m")
-    val mdc = new util.HashMap[String, String]()
-    mdc.put("sid", "83k238d2")
-    mdc.put("rid", "83482")
+    // val layout = new PatternLayout("%d{dd.MM.yyyy HH:mm:ss,SSS} - [%-5p] %c %X{sid} %m")
+    val pattern = "%d{dd.MM.yyyy HH:mm:ss,SSS} - [%-5p] %c %X{sid} %m"
+    val layout = PatternLayout.newBuilder().withPattern(pattern).build()
+    // val mdc = new util.HashMap[String, String]()
+    val mdc = ContextDataFactory.createContextData
+    mdc.putValue("sid", "83k238d2")
+    mdc.putValue("rid", "83482")
     val dateString = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss,SSS").format(new Date(1424339008197L))
-    val event = new LoggingEvent(getClass.toString, Logger.getLogger(getClass), 1424339008197L, Level.INFO, "this is the message",
-      "main", new ThrowableInformation(new Exception("whatever")), "theNdc", null, mdc)
-    val formatted = layout.format(event)
+    val message = new SimpleMessage("this is the message")
+    val classe = getClass.toString
+    val event3 = Log4jLogEvent.newBuilder()
+      .setLevel(Level.INFO)
+      .setLoggerFqcn(classe)
+      .setLoggerName(LogManager.getLogger().getName)
+      .setThreadName("main")
+      .setMessage(message)
+      .setThrown(new Throwable(new Exception("whatever")))
+      .setTimeMillis(1424339008197L)
+      .setContextData(mdc)
+      .build()
+    val formatted = layout.toSerializable(event3)
+    // val event = new LoggingEvent(getClass.toString, Logger.getLogger(getClass), 1424339008197L, Level.INFO, "this is the message",
+    //  "main", new ThrowableInformation(new Exception("whatever")), "theNdc", null, mdc)
     assert(dateString + " - [INFO ] net.stoerr.grokconstructor.patterntranslation.TestLog4jTranslator 83k238d2 this is the message" == formatted)
   }
 
-} */
+}
